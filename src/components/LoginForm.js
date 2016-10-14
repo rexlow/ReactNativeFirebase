@@ -7,17 +7,28 @@ import Button from './Button';
 import Card from './Card';
 import CardSection from './CardSection';
 import Input from './Input';
+import Spinner from './Spinner';
 
 import firebase from 'firebase';
 
 class LoginForm extends Component {
 
-  state = { email: '', password: '', errorMessage: '' }
+  state = { email: '', password: '', errorMessage: '', loading: false }
+
+  renderButton() {
+    if(this.state.loading) { return <Spinner size="small" /> }
+    return(
+      <Button
+        onPress={this.onButtonPressed.bind(this)}>
+        Login
+      </Button>
+    )
+  }
 
   onButtonPressed(){
     const { email, password } = this.state;
 
-    this.setState({ errorMessage: '' });
+    this.setState({ errorMessage: '', loading: true });
 
     firebase.auth().signInWithEmailAndPassword(email, password)
       .catch(() => {
@@ -52,10 +63,7 @@ class LoginForm extends Component {
         <Text style={styles.errorText}>{this.state.errorMessage}</Text>
 
         <CardSection>
-          <Button
-            onPress={this.onButtonPressed.bind(this)}>
-            Login
-          </Button>
+          {this.renderButton()}
         </CardSection>
       </Card>
     );
