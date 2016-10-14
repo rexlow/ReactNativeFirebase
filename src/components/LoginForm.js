@@ -31,12 +31,23 @@ class LoginForm extends Component {
     this.setState({ errorMessage: '', loading: true });
 
     firebase.auth().signInWithEmailAndPassword(email, password)
+      .then(this.onLoginSuccess.bind(this))
       .catch(() => {
         firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then(this.onLoginSuccess.bind(this))
           .catch((error) => {
-            this.setState({errorMessage: error.message})
+            this.setState({errorMessage: error.message, loading: false})
           });
       });
+  }
+
+  onLoginSuccess() {
+    this.setState({
+      errorMessage: '',
+      email: '',
+      password: '',
+      loading: false,
+    });
   }
 
   render() {
